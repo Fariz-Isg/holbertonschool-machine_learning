@@ -13,4 +13,3 @@ def array(df):
     df = df[['High', 'Close']].iloc[-10:]
     df = df.to_numpy()
     return df
-    
