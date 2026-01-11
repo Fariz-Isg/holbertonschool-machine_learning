@@ -15,3 +15,4 @@ def rename(df):
     df['Datetime'] = pd.to_datetime(df['Datetime'], unit='s')
     df = df[['Datetime', 'Close']]
     return df
+    
