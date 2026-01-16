@@ -3,7 +3,6 @@
 Module to calculate the derivative of a polynomial
 """
 
-
 def poly_derivative(poly):
     """
     Calculates the derivative of a polynomial
@@ -26,6 +25,5 @@ def poly_derivative(poly):
 
     if not derivative:
         return [0]
-
 
     return derivative
