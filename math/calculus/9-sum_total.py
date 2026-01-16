@@ -3,6 +3,7 @@
 Module to calculate summation of squares
 """
 
+
 def summation_i_squared(n):
     """
     Calculates the sum of i^2 from 1 to n
