@@ -30,17 +30,12 @@ def minor(matrix):
     for r in range(n):
         row_minors = []
         for c in range(n):
-            sub_matrix = [x[:c] + x[c+1:] for i, x in enumerate(matrix) if i != r]
+            sub_matrix = [x[:c] + x[c+1:]
+                          for i, x in enumerate(matrix) if i != r]
             row_minors.append(determinant(sub_matrix))
         minors.append(row_minors)
 
     return minors
-
-
-#!/usr/bin/env python3
-"""
-Calculates the determinant of a matrix
-"""
 
 
 def determinant(matrix):
