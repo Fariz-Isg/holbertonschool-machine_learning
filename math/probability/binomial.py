@@ -24,10 +24,10 @@ class Binomial:
                 raise TypeError("data must be a list")
             if len(data) < 2:
                 raise ValueError("data must contain multiple values")
-            
+
             mean = sum(data) / len(data)
             variance = sum((x - mean) ** 2 for x in data) / len(data)
-            
+
             p = 1 - (variance / mean)
             self.n = int(round(mean / p))
             self.p = float(mean / self.n)
