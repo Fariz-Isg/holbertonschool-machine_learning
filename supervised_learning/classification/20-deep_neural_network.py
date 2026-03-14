@@ -69,3 +69,31 @@ class DeepNeuralNetwork:
             self.__cache["A{}".format(i)] = A
 
         return A, self.__cache
+
+    def cost(self, Y, A):
+        """
+        Calculates the cost of the model using logistic regression
+        Args:
+            Y: numpy.ndarray with shape (1, m) that contains the correct labels
+            A: numpy.ndarray with shape (1, m) containing the activated output
+        Returns:
+            the cost
+        """
+        m = Y.shape[1]
+        loss = - (Y * np.log(A) + (1 - Y) * np.log(1.0000001 - A))
+        cost = (1 / m) * np.sum(loss)
+        return cost
+
+    def evaluate(self, X, Y):
+        """
+        Evaluates the neural network's predictions
+        Args:
+            X: numpy.ndarray with shape (nx, m) that contains the input data
+            Y: numpy.ndarray with shape (1, m) that contains the correct labels
+        Returns:
+            the neuron's prediction and the cost of the network
+        """
+        A, _ = self.forward_prop(X)
+        cost = self.cost(Y, A)
+        pred = np.where(A >= 0.5, 1, 0)
+        return pred, cost
