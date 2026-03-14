@@ -111,12 +111,7 @@ class DeepNeuralNetwork:
         m = Y.shape[1]
 
         # Start with the last layer
-        A_curr = cache["A{}".format(self.__L)]
-        dz = A_curr - Y
-
-        # Store gradients in a temporary dict before updating to prevent
-        # overwriting weights that are needed for backprop of earlier layers
-        weights_copy = self.__weights.copy()
+        dz = cache["A{}".format(self.__L)] - Y
 
         # Iterate backwards through the layers to calculate gradients
         for i in range(self.__L, 0, -1):
@@ -125,9 +120,9 @@ class DeepNeuralNetwork:
             dw = (1 / m) * np.matmul(dz, A_prev.T)
             db = (1 / m) * np.sum(dz, axis=1, keepdims=True)
 
-            # Next layer's dz propagation
+            # Next layer's dz propagation uses actual weights BEFORE updating
             if i > 1:
-                W = weights_copy["W{}".format(i)]
+                W = self.__weights["W{}".format(i)]
                 dz = np.matmul(W.T, dz) * (A_prev * (1 - A_prev))
 
             self.__weights["W{}".format(i)] = (
