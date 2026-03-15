@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Predict module"""
+import tensorflow.keras as K
 
 
 def predict(network, data, verbose=False):
