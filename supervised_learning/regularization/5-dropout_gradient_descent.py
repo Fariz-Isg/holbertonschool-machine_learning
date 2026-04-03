@@ -20,9 +20,7 @@ def dropout_gradient_descent(Y, weights, cache, alpha, keep_prob, L):
             D = cache['D' + str(i - 1)]
             dA = np.dot(W.T, dz)
             dA = (dA * D) / keep_prob
-            # A_prev is after dropout scaling: A = tanh(Z) * D / keep_prob
-            # So tanh(Z) = A_prev * keep_prob (where D=1)
-            dz = dA * (1 - (A_prev * keep_prob)**2)
+            dz = dA * (1 - (A_prev ** 2))
 
         weights['W' + str(i)] = W - alpha * dw
         weights['b' + str(i)] = b - alpha * db
