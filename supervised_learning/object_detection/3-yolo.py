@@ -152,4 +152,4 @@ class Yolo:
         area_2 = (x2_2 - x1_2) * (y2_2 - y1_2)
         area_u = area_1 + area_2 - area_i
         ious = area_i / area_u
-        return ious
+        return ious
