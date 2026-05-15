@@ -31,9 +31,9 @@ class Yolo:
         box_confidences = []
         box_class_probs = []
 
-        # Get input dimensions from the model (usually 416, 416)
-        input_h = self.model.input.shape[1]
-        input_w = self.model.input.shape[2]
+        # Get input dimensions from the model
+        input_h = self.model.input.shape[2]
+        input_w = self.model.input.shape[1]
 
         img_h, img_w = image_size
 
