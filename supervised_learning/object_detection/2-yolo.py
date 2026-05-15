@@ -33,6 +33,7 @@ class Yolo:
 
         input_h = self.model.input.shape[1]
         input_w = self.model.input.shape[2]
+        input_dim = np.sqrt(input_h * input_w)
 
         img_h, img_w = image_size
 
@@ -57,8 +58,8 @@ class Yolo:
             anchors_w = self.anchors[i, :, 0].reshape((1, 1, nb_anchors))
             anchors_h = self.anchors[i, :, 1].reshape((1, 1, nb_anchors))
 
-            b_w = (anchors_w * np.exp(t_w)) / input_w
-            b_h = (anchors_h * np.exp(t_h)) / input_h
+            b_w = (anchors_w * np.exp(t_w)) / input_dim
+            b_h = (anchors_h * np.exp(t_h)) / input_dim
 
             x1 = (b_x - b_w / 2) * img_w
             y1 = (b_y - b_h / 2) * img_h
