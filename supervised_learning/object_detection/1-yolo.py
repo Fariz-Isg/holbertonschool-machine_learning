@@ -31,42 +31,36 @@ class Yolo:
         box_confidences = []
         box_class_probs = []
 
-        # Get input dimensions from the model
-        input_h = self.model.input.shape[2]
-        input_w = self.model.input.shape[1]
+        input_h = self.model.input.shape[1]
+        input_w = self.model.input.shape[2]
+        input_dim = np.sqrt(input_h * input_w)
 
         img_h, img_w = image_size
 
         for i, output in enumerate(outputs):
             grid_h, grid_w, nb_anchors, _ = output.shape
 
-            # 1. Process Confidences and Class Probabilities (Sigmoid)
             box_confidences.append(1 / (1 + np.exp(-output[..., 4:5])))
             box_class_probs.append(1 / (1 + np.exp(-output[..., 5:])))
 
-            # 2. Process Boxes
             t_x = output[..., 0]
             t_y = output[..., 1]
             t_w = output[..., 2]
             t_h = output[..., 3]
 
-            # Create grid of (c_x, c_y)
             grid_y, grid_x = np.indices((grid_h, grid_w))
             grid_x = grid_x.reshape((grid_h, grid_w, 1))
             grid_y = grid_y.reshape((grid_h, grid_w, 1))
 
-            # Center coordinates (b_x, b_y) normalized to [0, 1]
             b_x = (1 / (1 + np.exp(-t_x)) + grid_x) / grid_w
             b_y = (1 / (1 + np.exp(-t_y)) + grid_y) / grid_h
 
-            # Width and height (b_w, b_h) normalized to [0, 1]
             anchors_w = self.anchors[i, :, 0].reshape((1, 1, nb_anchors))
             anchors_h = self.anchors[i, :, 1].reshape((1, 1, nb_anchors))
 
-            b_w = (anchors_w * np.exp(t_w)) / input_w
-            b_h = (anchors_h * np.exp(t_h)) / input_h
+            b_w = (anchors_w * np.exp(t_w)) / input_dim
+            b_h = (anchors_h * np.exp(t_h)) / input_dim
 
-            # Convert to x1, y1, x2, y2 relative to original image size
             x1 = (b_x - b_w / 2) * img_w
             y1 = (b_y - b_h / 2) * img_h
             x2 = (b_x + b_w / 2) * img_w
