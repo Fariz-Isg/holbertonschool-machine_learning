@@ -1,4 +1,4 @@
-`#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Yolo v3 object detection model."""
 import numpy as np
 import tensorflow.keras as K
