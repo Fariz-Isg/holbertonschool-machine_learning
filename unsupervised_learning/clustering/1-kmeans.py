@@ -41,7 +41,9 @@ def kmeans(X, k, iterations=1000):
         empty_mask = (counts[:, 0] == 0)
         num_empty = np.sum(empty_mask)
         if num_empty > 0:
-            C_new[empty_mask] = np.random.uniform(low, high, size=(num_empty, d))
+            C_new[empty_mask] = np.random.uniform(
+                low, high, size=(num_empty, d)
+            )
 
         C = C_new
         if np.all(C == C_prev):
