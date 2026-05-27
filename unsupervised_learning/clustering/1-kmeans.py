@@ -31,14 +31,19 @@ def kmeans(X, k, iterations=1000):
         dists = np.sum((X[:, None] - C) ** 2, axis=-1)
         clss = np.argmin(dists, axis=-1)
 
-        # Update centroids
-        for i in range(k):
-            points = X[clss == i]
-            if len(points) == 0:
-                C[i] = np.random.uniform(low, high)
-            else:
-                C[i] = np.mean(points, axis=0)
+        # Update centroids: Vectorized without nested loops
+        sum_X = np.zeros((k, d))
+        np.add.at(sum_X, clss, X)
+        counts = np.bincount(clss, minlength=k)[:, None]
+        safe_counts = np.where(counts == 0, 1, counts)
+        C_new = sum_X / safe_counts
 
+        empty_mask = (counts[:, 0] == 0)
+        num_empty = np.sum(empty_mask)
+        if num_empty > 0:
+            C_new[empty_mask] = np.random.uniform(low, high, size=(num_empty, d))
+
+        C = C_new
         if np.all(C == C_prev):
             break
 
