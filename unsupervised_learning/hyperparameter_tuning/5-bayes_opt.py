@@ -37,7 +37,7 @@ class BayesianOptimization:
         """Optimizes the black-box function."""
         for _ in range(iterations):
             X_next, _ = self.acquisition()
-            if np.any(np.abs(X_next - self.gp.X) < 1e-6):
+            if np.any(np.abs(X_next[0] - self.gp.X.reshape(-1)) < 1e-6):
                 break
             Y_next = self.f(X_next)
             self.gp.update(X_next, Y_next)
