@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Contains the BayesianOptimization class that performs Bayesian Optimization
+Contains the BayesianOptimization class 
+that performs Bayesian Optimization
 on a 1D black-box function.
 """
 import numpy as np
@@ -26,9 +27,9 @@ class GaussianProcess:
         """
         Calculates the RBF kernel matrix between two matrices
         """
-        sqdist = (np.sum(X1**2, 1).reshape(-1, 1) +
-                  np.sum(X2**2, 1) -
-                  2 * np.dot(X1, X2.T))
+        a = np.sum(X1**2, 1).reshape(-1, 1)
+        b = np.sum(X2**2, 1)
+        sqdist = a + b - 2 * np.dot(X1, X2.T)
         return self.sigma_f**2 * np.exp(-0.5 / self.l**2 * sqdist)
 
     def predict(self, X_s):
@@ -72,7 +73,8 @@ class BayesianOptimization:
 
     def acquisition(self):
         """
-        Calculates the next best sample location using Expected Improvement
+        Calculates the next best sample
+        location using Expected Improvement
         """
         mu, sigma = self.gp.predict(self.X_s)
         mu = mu.reshape(-1, 1)
@@ -91,22 +93,13 @@ class BayesianOptimization:
 
     def optimize(self, iterations=100):
         """
-        Optimizes the black-box function using Expected Improvement
-
-        Args:
-            iterations: maximum number of iterations to perform
-
-        Returns:
-            X_opt: numpy.ndarray of shape (1,) representing the optimal point
-            Y_opt: numpy.ndarray of shape (1,) representing optimal value
+        Optimizes the black-box function
+        using Expected Improvement
         """
         for _ in range(iterations):
             X_next, _ = self.acquisition()
-
-            # Early stopping check if the point has already been sampled
             if X_next in self.gp.X:
                 break
-
             Y_next = self.f(X_next)
             self.gp.update(X_next, Y_next)
 
