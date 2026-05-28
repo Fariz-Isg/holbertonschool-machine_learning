@@ -16,7 +16,7 @@ class GaussianProcess:
 
     def kernel(self, X1, X2):
         """Calculates the RBF covariance kernel matrix."""
-        diff = (np.sum(X1 ** 2, axis=1).reshape(-1, 1)
-                + np.sum(X2 ** 2, axis=1).reshape(1, -1)
-                - 2 * X1 @ X2.T)
+        diff = (np.sum(X1 ** 2, axis=1).reshape(-1, 1) +
+                np.sum(X2 ** 2, axis=1).reshape(1, -1) -
+                2 * X1 @ X2.T)
         return self.sigma_f ** 2 * np.exp(-diff / (2 * self.l ** 2))
