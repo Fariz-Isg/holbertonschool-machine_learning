@@ -26,7 +26,9 @@ class GaussianProcess:
         """
         Calculates the RBF kernel matrix between two matrices
         """
-        sqdist = np.sum(X1**2, 1).reshape(-1, 1) + np.sum(X2**2, 1) - 2 * np.dot(X1, X2.T)
+        sqdist = (np.sum(X1**2, 1).reshape(-1, 1) +
+                  np.sum(X2**2, 1) -
+                  2 * np.dot(X1, X2.T))
         return self.sigma_f**2 * np.exp(-0.5 / self.l**2 * sqdist)
 
     def predict(self, X_s):
@@ -63,7 +65,9 @@ class BayesianOptimization:
         """
         self.f = f
         self.gp = GaussianProcess(X_init, Y_init, l, sigma_f)
-        self.X_s = np.linspace(bounds[0], bounds[1], acq_samples).reshape(-1, 1)
+        self.X_s = np.linspace(
+            bounds[0], bounds[1], acq_samples
+        ).reshape(-1, 1)
         self.xsi = xsi
 
     def acquisition(self):
