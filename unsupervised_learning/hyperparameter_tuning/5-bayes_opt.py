@@ -21,23 +21,24 @@ class BayesianOptimization:
     def acquisition(self):
         """Calculates the next best sample location using Expected Improvement."""
         mu, sigma = self.gp.predict(self.X_s)
+        mu = mu.reshape(-1, 1)
+        sigma = sigma.reshape(-1, 1)
         if self.minimize:
             f_best = np.min(self.gp.Y)
-            imp = f_best - mu - self.xsi
         else:
             f_best = np.max(self.gp.Y)
-            imp = mu - f_best - self.xsi
+        imp = f_best - mu - self.xsi
         Z = imp / sigma
         EI = imp * norm.cdf(Z) + sigma * norm.pdf(Z)
         EI[sigma == 0] = 0
-        X_next = self.X_s[np.argmax(EI)].reshape(-1)
-        return X_next, EI
+        X_next = self.X_s[np.argmax(EI)]
+        return X_next, EI.reshape(-1)
 
     def optimize(self, iterations=100):
         """Optimizes the black-box function."""
         for _ in range(iterations):
             X_next, _ = self.acquisition()
-            if np.any(np.all(X_next == self.gp.X, axis=1)):
+            if X_next in self.gp.X:
                 break
             Y_next = self.f(X_next)
             self.gp.update(X_next, Y_next)
