@@ -1,47 +1,50 @@
 #!/usr/bin/env python3
-"""Bayesian Information Criterion for GMM"""
+"""Expectation Maximization for a GMM"""
 import numpy as np
-expectation_maximization = __import__('8-EM').expectation_maximization
+initialize = __import__('4-initialize').initialize
+expectation = __import__('6-expectation').expectation
+maximization = __import__('7-maximization').maximization
 
 
-def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
-    """Finds the best number of clusters for a GMM using BIC."""
+def expectation_maximization(X, k, iterations=1000, tol=1e-5, verbose=False):
+    """Performs the expectation maximization for a GMM.
+
+    Args:
+        X: numpy.ndarray of shape (n, d) containing the dataset
+        k: positive integer, number of clusters
+        iterations: positive integer, maximum number of iterations
+        tol: non-negative float, tolerance for log likelihood
+        verbose: boolean, whether to print log likelihood info
+
+    Returns:
+        pi, m, S, g, l or None, None, None, None, None on failure
+    """
     if not isinstance(X, np.ndarray) or X.ndim != 2:
-        return None, None, None, None
-    n, d = X.shape
-    if not isinstance(kmin, int) or kmin <= 0:
-        return None, None, None, None
-    if kmax is None:
-        kmax = n
-    if not isinstance(kmax, int) or kmax <= 0:
-        return None, None, None, None
-    if kmax <= kmin:
-        return None, None, None, None
+        return None, None, None, None, None
+    if not isinstance(k, int) or k <= 0:
+        return None, None, None, None, None
     if not isinstance(iterations, int) or iterations <= 0:
-        return None, None, None, None
+        return None, None, None, None, None
     if not isinstance(tol, float) or tol < 0:
-        return None, None, None, None
+        return None, None, None, None, None
     if not isinstance(verbose, bool):
-        return None, None, None, None
-
-    likelihoods = []
-    bics = []
-    results = []
-
-    for k in range(kmin, kmax + 1):
-        pi, m, S, g, log_l = expectation_maximization(
-            X, k, iterations, tol, verbose)
-        if pi is None:
-            return None, None, None, None
-        results.append((pi, m, S))
-        likelihoods.append(log_l)
-        p = k * (1 + d + d * (d + 1) // 2) - 1
-        bics.append(p * np.log(n) - 2 * log_l)
-
-    l = np.array(likelihoods)
-    b = np.array(bics)
-    best_idx = np.argmin(b)
-    best_k = kmin + best_idx
-    best_result = results[best_idx]
-
-    return best_k, best_result, l, b
+        return None, None, None, None, None
+    pi, m, S = initialize(X, k)
+    l_prev = 0
+    for i in range(iterations):
+        g, ll = expectation(X, pi, m, S)
+        if verbose and i % 10 == 0:
+            print("Log Likelihood after {} iterations: {}".format(
+                i, round(ll, 5)))
+        if i > 0 and abs(ll - l_prev) <= tol:
+            if verbose:
+                print("Log Likelihood after {} iterations: {}".format(
+                    i, round(ll, 5)))
+            return pi, m, S, g, ll
+        pi, m, S = maximization(X, g)
+        l_prev = ll
+    g, ll = expectation(X, pi, m, S)
+    if verbose:
+        print("Log Likelihood after {} iterations: {}".format(
+            iterations, round(ll, 5)))
+    return pi, m, S, g, ll
