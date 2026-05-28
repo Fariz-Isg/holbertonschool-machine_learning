@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Contains the BayesianOptimization class 
-that performs Bayesian Optimization
+Contains the BayesianOptimization class that performs Bayesian Optimization
 on a 1D black-box function.
 """
 import numpy as np
@@ -73,8 +72,7 @@ class BayesianOptimization:
 
     def acquisition(self):
         """
-        Calculates the next best sample
-        location using Expected Improvement
+        Calculates the next best sample location using Expected Improvement
         """
         mu, sigma = self.gp.predict(self.X_s)
         mu = mu.reshape(-1, 1)
@@ -93,8 +91,7 @@ class BayesianOptimization:
 
     def optimize(self, iterations=100):
         """
-        Optimizes the black-box function
-        using Expected Improvement
+        Optimizes the black-box function using Expected Improvement
         """
         for _ in range(iterations):
             X_next, _ = self.acquisition()
