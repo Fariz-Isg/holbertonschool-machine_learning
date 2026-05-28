@@ -6,8 +6,7 @@ GP = __import__('2-gp').GaussianProcess
 
 
 class BayesianOptimization:
-    """Performs Bayesian optimization on
-    a noiseless 1D Gaussian process."""
+    """Performs Bayesian optimization on a noiseless 1D Gaussian process."""
 
     def __init__(self, f, X_init, Y_init, bounds, ac_samples,
                  l=1, sigma_f=1, xsi=0.01, minimize=True):
@@ -20,8 +19,7 @@ class BayesianOptimization:
         self.minimize = minimize
 
     def acquisition(self):
-        """Calculates the next best sample
-        location using Expected Improvement."""
+        """Calculates the next best sample location using Expected Improvement."""
         mu, sigma = self.gp.predict(self.X_s)
         if self.minimize:
             f_best = np.min(self.gp.Y)
@@ -39,7 +37,7 @@ class BayesianOptimization:
         """Optimizes the black-box function."""
         for _ in range(iterations):
             X_next, _ = self.acquisition()
-            if np.any(np.isclose(X_next, self.gp.X)):
+            if np.any(np.abs(X_next - self.gp.X) < 1e-6):
                 break
             Y_next = self.f(X_next)
             self.gp.update(X_next, Y_next)
