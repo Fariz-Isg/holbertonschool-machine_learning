@@ -39,10 +39,10 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
         p = k * (1 + d + d * (d + 1) // 2) - 1
         bics.append(p * np.log(n) - 2 * log_l)
 
-    l = np.array(likelihoods)
+    liks = np.array(likelihoods)
     b = np.array(bics)
     best_idx = np.argmin(b)
     best_k = kmin + best_idx
     best_result = results[best_idx]
 
-    return best_k, best_result, l, b
+    return best_k, best_result, liks, b
