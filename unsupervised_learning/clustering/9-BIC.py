@@ -9,11 +9,19 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
     if not isinstance(X, np.ndarray) or X.ndim != 2:
         return None, None, None, None
     n, d = X.shape
-    if not isinstance(kmin, int) or kmin < 1:
+    if not isinstance(kmin, int) or kmin <= 0:
         return None, None, None, None
     if kmax is None:
         kmax = n
-    if not isinstance(kmax, int) or kmax < kmin:
+    if not isinstance(kmax, int) or kmax <= 0:
+        return None, None, None, None
+    if kmax < kmin:
+        return None, None, None, None
+    if not isinstance(iterations, int) or iterations <= 0:
+        return None, None, None, None
+    if not isinstance(tol, float) or tol < 0:
+        return None, None, None, None
+    if not isinstance(verbose, bool):
         return None, None, None, None
 
     likelihoods = []
@@ -27,7 +35,6 @@ def BIC(X, kmin=1, kmax=None, iterations=1000, tol=1e-5, verbose=False):
             return None, None, None, None
         results.append((pi, m, S))
         likelihoods.append(log_l)
-        # p = k*1 (pi) + k*d (means) + k*d*(d+1)/2 (cov, symmetric) - 1 (pi sums to 1)
         p = k * (1 + d + d * (d + 1) // 2) - 1
         bics.append(p * np.log(n) - 2 * log_l)
 
