@@ -4,22 +4,7 @@ import numpy as np
 
 
 def deep_rnn(rnn_cells, X, h_0):
-    """Forward propagation for a deep RNN.
-
-    Args:
-        rnn_cells: List of RNN cell instances for each layer.
-        X (np.ndarray): Input data of shape (t, m, i).
-        h_0 (np.ndarray): Initial hidden states of shape (l, m, h).
-
-    Returns:
-        Tuple[np.ndarray, np.ndarray]:
-            - H: Hidden states, shape (t + 1, l, m, h), with H[0] = h_0.
-            - Y: Outputs for each time step, shape (t, m, o).
-
-    Raises:
-        TypeError: If X or h_0 are not numpy arrays.
-        ValueError: If X and h_0 have incompatible shapes.
-    """
+    """Forward propagation for a deep RNN."""
     if not isinstance(X, np.ndarray):
         raise TypeError('X should be a ndarray')
     if not isinstance(h_0, np.ndarray):
@@ -43,4 +28,4 @@ def deep_rnn(rnn_cells, X, h_0):
         Y_steps.append(y_curr)
 
     Y = np.array(Y_steps)
-    return H, Y
+    return H, Y
