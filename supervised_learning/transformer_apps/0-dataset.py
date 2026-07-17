@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Dataset class for machine translation tokenizer setup."""
+import tensorflow as tf
 import transformers
 from setup import load_pt2en
 

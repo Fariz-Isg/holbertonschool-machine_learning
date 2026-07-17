@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Dataset class with token encoding for machine translation."""
+import tensorflow as tf
 import transformers
 from setup import load_pt2en
 
