@@ -62,13 +62,13 @@ class Dataset:
         """
         def pt_iterator():
             """Yield Portuguese sentences from the dataset."""
-            for pt, en in data:
-                yield pt.numpy().decode('utf-8')
+            for pt, en in data.as_numpy_iterator():
+                yield pt.decode('utf-8')
 
         def en_iterator():
             """Yield English sentences from the dataset."""
-            for pt, en in data:
-                yield en.numpy().decode('utf-8')
+            for pt, en in data.as_numpy_iterator():
+                yield en.decode('utf-8')
 
         tokenizer_pt = transformers.AutoTokenizer.from_pretrained(
             'neuralmind/bert-base-portuguese-cased'
