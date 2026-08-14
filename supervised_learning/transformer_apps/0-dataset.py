@@ -21,12 +21,25 @@ class Dataset:
         """
         Creates subword tokenizers for Portuguese and English.
         """
-        pt_sentences = []
-        en_sentences = []
-        # Iterate over the dataset
-        for pt, en in data:
-            pt_sentences.append(pt.numpy().decode('utf-8'))
-            en_sentences.append(en.numpy().decode('utf-8'))
+        def pt_iterator():
+            batch = []
+            for pt, _ in data:
+                batch.append(pt.numpy().decode('utf-8'))
+                if len(batch) >= 1000:
+                    yield batch
+                    batch = []
+            if batch:
+                yield batch
+
+        def en_iterator():
+            batch = []
+            for _, en in data:
+                batch.append(en.numpy().decode('utf-8'))
+                if len(batch) >= 1000:
+                    yield batch
+                    batch = []
+            if batch:
+                yield batch
 
         # Create tokenizers for Portuguese and English
         tokenizer_pt = transformers.AutoTokenizer.from_pretrained(
@@ -37,10 +50,10 @@ class Dataset:
             clean_up_tokenization_spaces=True)
 
         # Train the tokenizers
-        tokenizer_pt = tokenizer_pt.train_new_from_iterator(pt_sentences,
-                                                            vocab_size=2 ** 13)
-        tokenizer_en = tokenizer_en.train_new_from_iterator(en_sentences,
-                                                            vocab_size=2 ** 13)
+        tokenizer_pt = tokenizer_pt.train_new_from_iterator(
+            pt_iterator(), vocab_size=2 ** 13)
+        tokenizer_en = tokenizer_en.train_new_from_iterator(
+            en_iterator(), vocab_size=2 ** 13)
 
         self.tokenizer_pt = tokenizer_pt
         self.tokenizer_en = tokenizer_en
